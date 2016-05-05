@@ -1,14 +1,14 @@
 {
-  "name": "electron-quick-start",
-  "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "name": "electron-amazon-linkbuilder",
+  "version": "0.0.1",
+  "description": "Amazon Affiliate Link Builder built on Electron with Mithril.js",
   "main": "main.js",
   "scripts": {
     "start": "electron main.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atom/electron-quick-start.git"
+    "url": "git+https://github.com/meganii/electron-amazon-linkbuilder.git"
   },
   "keywords": [
     "Electron",
@@ -16,12 +16,12 @@
     "start",
     "tutorial"
   ],
-  "author": "GitHub",
-  "license": "CC0-1.0",
+  "author": "meganii",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/atom/electron-quick-start/issues"
+    "url": "https://github.com/meganii/electron-amazon-linkbuilder/issues"
   },
-  "homepage": "https://github.com/atom/electron-quick-start#readme",
+  "homepage": "https://github.com/meganii/electron-amazon-linkbuilder#readme",
   "devDependencies": {
     "electron-prebuilt": "^0.36.0",
     "mithril": "^0.2.4",
