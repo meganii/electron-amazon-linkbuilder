@@ -27,6 +27,7 @@
 
       const OperationHelper = require('apac').OperationHelper;
       const m = require('mithril');
+      const Config = require('config');
 
       var app = {};
 
@@ -61,9 +62,9 @@
 
             var opHelper = new OperationHelper({
               endPoint:   'webservices.amazon.co.jp',
-              awsId:      'AMAZONID',
-              awsSecret:  'AMAZONSECRET',
-              assocId:    'ASSOCATEID',
+              awsId:      Config.awsId,
+              awsSecret:  Config.awsSecret,
+              assocId:    Config.assocId,
             });
 
             opHelper.execute('ItemSearch', {
