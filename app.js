@@ -4,7 +4,7 @@ import {OperationHelper} from 'apac';
 import m from 'mithril';
 import Config from 'config';
 
-var app = {};
+let app = {};
 
 //appクラスは2つのプロパティを持つ
 // dataは、amazon web servicesからの戻り値オブジェクト
@@ -35,7 +35,7 @@ app.vm = (function() {
     // 検索
     vm.search = () => {
 
-      var opHelper = new OperationHelper({
+      const opHelper = new OperationHelper({
         locale:    'JP',
         awsId:      Config.awsId,
         awsSecret:  Config.awsSecret,
@@ -47,8 +47,7 @@ app.vm = (function() {
         'Keywords': vm.searchWord(),
         'ResponseGroup': 'Images,ItemAttributes,Offers'
       }).then((response) => {
-        var items = response.result.ItemSearchResponse.Items.Item;
-        vm.list = items;
+        vm.list = response.result.ItemSearchResponse.Items.Item;
         m.redraw();
       }).catch((err) => {
         console.error("Something went wrong! ", err);
@@ -79,14 +78,14 @@ app.controller = function() {
     };
 
     this.createlink = (item) => {
-      var rakutenAffiUrl = 'https://app.rakuten.co.jp/services/api/BooksBook/Search/20130522?format=json&affiliateId=13e181b2.b5761023.13e181b3.cbc7b217&applicationId=1023136854815472269&isbn=' + item.ItemAttributes.ISBN;
+      const rakutenAffiUrl = 'https://app.rakuten.co.jp/services/api/BooksBook/Search/20130522?format=json&affiliateId=13e181b2.b5761023.13e181b3.cbc7b217&applicationId=1023136854815472269&isbn=' + item.ItemAttributes.ISBN;
 
       m.request({method: "GET", url: rakutenAffiUrl})
         .then((result) => {
-          var url = "";
+          let url = "";
           url += item.MediumImage.URL;
-          var src = url.replace(/http:\/\/ecx\.images-amazon\.com\/images\//, 'https://images-na.ssl-images-amazon.com/images/');
-          var content =   '<div class="booklink-box">'
+          const src = url.replace(/http:\/\/ecx\.images-amazon\.com\/images\//, 'https://images-na.ssl-images-amazon.com/images/');
+          const content = '<div class="booklink-box">'
               +   '<div class="booklink-image">'
               +     '<a href=' + item.DetailPageURL + ">"
               +       '<img src="' + src + '" />'
