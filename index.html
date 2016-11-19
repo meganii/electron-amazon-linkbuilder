@@ -61,7 +61,7 @@
           vm.search = function() {
 
             var opHelper = new OperationHelper({
-              endPoint:   'webservices.amazon.co.jp',
+              locale:    'JP',
               awsId:      Config.awsId,
               awsSecret:  Config.awsSecret,
               assocId:    Config.assocId,
@@ -71,10 +71,12 @@
               'SearchIndex': 'Books',
               'Keywords': vm.searchWord(),
               'ResponseGroup': 'Images,ItemAttributes,Offers'
-            }, function(err, results) {
-                var items = results.ItemSearchResponse.Items[0].Item;
-                vm.list = items;
-                m.redraw();
+            }).then((response) => {
+              var items = response.result.ItemSearchResponse.Items.Item;
+              vm.list = items;
+              m.redraw();
+            }).catch((err) => {
+              console.error("Something went wrong! ", err);
             });
           };
 
@@ -91,34 +93,34 @@
           // ResponseのitemからimageのURLを取得する。存在しなければ、dummyのURLを返す
           this.getImageURL = function(item) {
             if (!item.hasOwnProperty("MediumImage")) { return "http://dummy.jpg"}
-            return item.MediumImage[0].URL;
+            return item.MediumImage.URL;
           };
 
           // 価格を取得(たまに、値段が取得できないときがある)
           this.getPrice = function(item) {
             if (!item.hasOwnProperty("ItemAttributes")) { return "" }
-            if (!item.ItemAttributes[0].hasOwnProperty("ListPrice")) { return "" }
-            return item.ItemAttributes[0].ListPrice[0].FormattedPrice;
+            if (!item.ItemAttributes.hasOwnProperty("ListPrice")) { return "" }
+            return item.ItemAttributes.ListPrice.FormattedPrice;
           };
 
           this.createlink = function(item) {
-            var rakutenAffiUrl = 'https://app.rakuten.co.jp/services/api/BooksBook/Search/20130522?format=json&affiliateId=13e181b2.b5761023.13e181b3.cbc7b217&applicationId=1023136854815472269&isbn=' + item.ItemAttributes[0].ISBN;
+            var rakutenAffiUrl = 'https://app.rakuten.co.jp/services/api/BooksBook/Search/20130522?format=json&affiliateId=13e181b2.b5761023.13e181b3.cbc7b217&applicationId=1023136854815472269&isbn=' + item.ItemAttributes.ISBN;
 
             m.request({method: "GET", url: rakutenAffiUrl})
               .then(function(result){
                 var url = "";
-                url += item.MediumImage[0].URL;
+                url += item.MediumImage.URL;
                 var src = url.replace(/http:\/\/ecx\.images-amazon\.com\/images\//, 'https://images-na.ssl-images-amazon.com/images/');
                 var content =   '<div class="booklink-box">'
                     +   '<div class="booklink-image">'
-                    +     '<a href=' + item.DetailPageURL[0] + ">"
+                    +     '<a href=' + item.DetailPageURL + ">"
                     +       '<img src="' + src + '" />'
                     +     '</a>'
                     +   '</div>'
                     +   '<div class="booklink-info">'
                     +     '<div class="booklink-name">'
                     +       '<a href="http://www.amazon.co.jp/exec/obidos/asin/' + item.ASIN +'/meganii-22/">'
-                    +         item.ItemAttributes[0].Title
+                    +         item.ItemAttributes.Title
                     +       '</a>'
                     +     '</div>'
                     +     '<div class="shoplinkamazon">'
@@ -163,7 +165,7 @@
                 m("div", {class: "left"}, [
                   m("ul", [
                     m("li", item.ASIN),
-                    m("li", item.ItemAttributes[0].Title),
+                    m("li", item.ItemAttributes.Title),
                     m("li", ctrl.getPrice(item))
                   ])
                 ]),
