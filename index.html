@@ -57,8 +57,9 @@
           // アクティブなItemのリスト
           vm.list = new app.ItemList();
 
+          vm.resultPages = new Array;
           // 検索
-          vm.search = function() {
+          vm.search = function(itemPage) {
 
             var opHelper = new OperationHelper({
               locale:    'JP',
@@ -70,10 +71,14 @@
             opHelper.execute('ItemSearch', {
               'SearchIndex': 'Books',
               'Keywords': vm.searchWord(),
-              'ResponseGroup': 'Images,ItemAttributes,Offers'
+              'ResponseGroup': 'Images,ItemAttributes,Offers',
+              'ItemPage': itemPage
             }).then((response) => {
-              var items = response.result.ItemSearchResponse.Items.Item;
-              vm.list = items;
+              vm.list = response.result.ItemSearchResponse.Items.Item;
+              vm.resultPages = new Array;
+              for(i=0;i<response.result.ItemSearchResponse.Items.TotalPages;i++){
+                  vm.resultPages.push(i+1);
+              }
               m.redraw();
             }).catch((err) => {
               console.error("Something went wrong! ", err);
@@ -147,7 +152,7 @@
             m("div", {class: "pure-form"}, [
               m("label", {for: "search-word"}, "検索条件"),
               m("input", {type: "text", onchange: m.withAttr("value", app.vm.searchWord), value: app.vm.searchWord()}),
-              m("button", {class: "pure-button pure-button-primary", onclick: app.vm.search}, "検索する"),
+              m("button", {class: "pure-button pure-button-primary", onclick: app.vm.search.bind(this, 1)}, "検索する"),
             ])
           ]),
           m("div", {class: "pure-u-2-3 pure-u-md-2-5 pure-u-lg-2-3"}, [
@@ -170,6 +175,11 @@
                   ])
                 ]),
               ]);
+            })
+          ]),
+          m("div", {class: "pure-g"},[
+            app.vm.resultPages.map(function(i, index){
+              return m("button", {class: "pure-button pure-button-primary", onclick: app.vm.search.bind(this, i)}, i);
             })
           ])
          ]);
