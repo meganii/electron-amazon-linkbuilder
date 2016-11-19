@@ -38,7 +38,7 @@
       //appクラスは2つのプロパティを持つ
       // dataは、amazon web servicesからの戻り値オブジェクト
       app.Item = function(data) {
-        Title, DetailPageURL, MediumImageURL, ISBN
+        // Title, DetailPageURL, MediumImageURL, ISBN
         this.title = m.prop(data.ItemAttributes[0].Title);
         this.DetailPageURL = m.prop(data.DetailPageURL[0]);
         this.MediumImageURL = m.prop(data.MediumImageURL[0].URL);
@@ -78,14 +78,19 @@
               'ResponseGroup': 'Images,ItemAttributes,Offers',
               'ItemPage': itemPage
             }).then((response) => {
+              console.log(response.result);
               vm.list = response.result.ItemSearchResponse.Items.Item;
               vm.resultPages = new Array;
-              for(i=0;i<response.result.ItemSearchResponse.Items.TotalPages;i++){
-                  vm.resultPages.push(i+1);
+              const totalPages = response.result.ItemSearchResponse.Items.TotalPages;
+              const maxPage = totalPages < 10 ? totalPages : 10;
+              for(i=0;i<maxPage;i++){
+                vm.resultPages.push(i+1);
               }
               m.redraw();
             }).catch((err) => {
               console.error("Something went wrong! ", err);
+              vm.list = new Array;
+              vm.resultPages = new Array;
             });
           };
 
@@ -141,6 +146,10 @@
                     +   '</div>'
                     + '</div>';
                 app.vm.createdlink(content);
+              })
+              .catch(function(err){
+                console.log(err);
+                alert(err);
               });
           }
       }
