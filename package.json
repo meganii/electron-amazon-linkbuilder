@@ -24,7 +24,7 @@
   "homepage": "https://github.com/meganii/electron-amazon-linkbuilder#readme",
   "dependencies": {
     "electron": "^1.4.1",
-    "mithril": "^0.2.5",
+    "mithril": "^2.0.4",
     "config": "^1.20.0",
     "apac": "2.0.2"
   },
